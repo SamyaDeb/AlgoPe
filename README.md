@@ -1,7 +1,6 @@
 # AlgoPe
 
-<img width="1255" height="699" alt="Landing" src="https://github.com/user-attachments/assets/2493bee3-5a24-4687-9003-ece3ac941683" />
-
+<img width="1470" height="846" alt="Screenshot 2026-08-18 at 5 22 39 PM" src="https://github.com/user-attachments/assets/a377ea80-da7b-466a-ac06-086cf9e59391" />
 
 **Monetize any HTTP API with blockchain micropayments. Consume paid APIs directly from Claude and other AI tools — no accounts, no API keys.**
 
