@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: typecheck, unit tests, load test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm run typecheck
+      - run: npm test
+
+      # Drives real traffic through the proxy and asserts every unpaid request
+      # is challenged with a 402. No money moves and no third-party facilitator
+      # is called per request, so this is safe to run on every push.
+      - name: Load test (1000 requests)
+        run: node packages/algope/scripts/loadtest.mjs --requests 1000 --concurrency 50 --facilitator-mode self
+
+  live:
+    name: live testnet + facilitator checks
+    runs-on: ubuntu-latest
+    # Opt-in only: depends on Algorand testnet and a third-party facilitator
+    # being up, so it must not gate ordinary pull requests.
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run test:live
+        env:
+          ALGOPE_REGISTRY_APP_ID: "769455464"
